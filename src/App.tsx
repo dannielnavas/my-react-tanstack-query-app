@@ -1,4 +1,4 @@
-import React, { lazy, useState, useTransition } from "react";
+import React, { lazy, Suspense, useMemo, useState, useTransition } from "react";
 import "./App.css";
 import { useCourses } from "./hooks/useCourses";
 
@@ -10,6 +10,15 @@ const App: React.FC = () => {
   const coursesPerPage = 2;
 
   const [isPending, startTransition] = useTransition();
+
+  const currentCourses = useMemo(() => {
+    if (!courses) {
+      return [];
+    }
+    const indexOffLastCourse = currentPage * coursesPerPage;
+    const indexOffFirstCourse = indexOffLastCourse - coursesPerPage;
+    return courses?.slice(indexOffFirstCourse, indexOffLastCourse);
+  }, [courses, currentPage, coursesPerPage]);
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -25,7 +34,10 @@ const App: React.FC = () => {
 
   return (
     <section>
-      <CourseList courses={courses} />
+      <h1>📑Learning courses 📚</h1>
+      <Suspense fallback={<div>Loading...</div>}>
+        <CourseList courses={currentCourses} />
+      </Suspense>
       <div>
         {Array.from(
           { length: Math.ceil(courses.length / coursesPerPage) },

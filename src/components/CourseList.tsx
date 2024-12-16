@@ -7,7 +7,7 @@ interface Course {
   duration: number;
 }
 
-const CourseList: React.FC<{ courses: Course[] }> = ({ courses }) => {
+const CourseList: React.FC<{ courses: Course[] }> = React.memo(({ courses }) => {
   return (
     <ul>
       {courses.map((course) => (
@@ -19,6 +19,6 @@ const CourseList: React.FC<{ courses: Course[] }> = ({ courses }) => {
       ))}
     </ul>
   );
-};
+});
 
 export default CourseList;
